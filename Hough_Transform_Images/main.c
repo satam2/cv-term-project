@@ -148,8 +148,9 @@ Matrix findHoughMaxima(Matrix mx, int number, double minSeparation)
 // Read image and write Hough transform related output images. 
 int main()
 {
-	int m, n, m1, n1, m2, n2;
+	int i, m, n, m1, n1, m2, n2;
 	double maxLength, alpha, dist;
+	Matrix maxMatrix;
 	double gaussFilter[3][3] = {{1.0, 2.0, 1.0}, {2.0, 4.0, 2.0}, {1.0, 2.0, 1.0}};
 	Matrix gauss = createMatrixFromArray(&gaussFilter[0][0], 3, 3);
 	Image inputImage = readImage("DW.ppm");
@@ -257,28 +258,24 @@ int main()
 
 	maxLength = sqrt((double) (SQR(inputImage.height) + SQR(inputImage.width)));
 
-	double houghMax = 0.0;
-	for (m = 0; m < houghMatrix.height; m++)
-		for (n = 0; n < houghMatrix.width; n++)
-			if (houghMatrix.map[m][n] > houghMax) houghMax = houghMatrix.map[m][n];
-	double houghThresh = 0.5 * houghMax;
+	maxMatrix = findHoughMaxima(houghMatrix, 100, 50.0);
 
-	for (m = 0; m < houghMatrix.height; m++)
-		for (n = 0; n < houghMatrix.width; n++)
-			if (houghMatrix.map[m][n] >= houghThresh && isLocalMaximum(houghMatrix, m, n))
-			{
-				alpha = -0.5*PI + PI*(double)m/(double) houghMatrix.height;
-				dist = maxLength*(double)n/(double) houghMatrix.width;
-				m1 = (int) (dist*sin(alpha) - maxLength*cos(alpha) + 0.5);
-				n1 = (int) (dist*cos(alpha) + maxLength*sin(alpha) + 0.5);
-				m2 = (int) (dist*sin(alpha) + maxLength*cos(alpha) + 0.5);
-				n2 = (int) (dist*cos(alpha) - maxLength*sin(alpha) + 0.5);
-				line(inputImage, m1, n1, m2, n2, 2, 18, 10, 30, 30, 30, 0);
-			}
+	for (i = 0; i < 100; i++)
+	{
+		if (maxMatrix.map[2][i] < 0.0) break;
+		alpha = -0.5*PI + PI*maxMatrix.map[0][i]/(double) houghMatrix.height;
+		dist = maxLength*maxMatrix.map[1][i]/(double) houghMatrix.width;
+		m1 = (int) (dist*sin(alpha) - maxLength*cos(alpha) + 0.5);
+		n1 = (int) (dist*cos(alpha) + maxLength*sin(alpha) + 0.5);
+		m2 = (int) (dist*sin(alpha) + maxLength*cos(alpha) + 0.5);
+		n2 = (int) (dist*cos(alpha) - maxLength*sin(alpha) + 0.5);
+		line(inputImage, m1, n1, m2, n2, 2, 18, 10, 30, 30, 30, 0);
+	}
 	writeImage(inputImage, "hough_lines.ppm");
 
 	deleteMatrix(edgeMatrix);
 	deleteMatrix(houghMatrix);
+	deleteMatrix(maxMatrix);
 	deleteImage(inputImage);
 	return 0;
 }

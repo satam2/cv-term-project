@@ -1,0 +1,15 @@
+# Compiled binaries
+*.exe
+
+# Debug output files
+edges_debug.ppm
+hough_space.ppm
+
+# CSV export files
+*.csv
+
+# Build artifacts
+hough
+
+# Design documents (not for git)
+docs/

@@ -5,9 +5,6 @@
 edges_debug.ppm
 hough_space.ppm
 
-# CSV export files
-*.csv
-
 # Build artifacts
 hough
 

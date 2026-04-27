@@ -145,7 +145,146 @@ Matrix findHoughMaxima(Matrix mx, int number, double minSeparation)
 }
 
 
-// Read image and write Hough transform related output images. 
+// Calculate histogram of non-zero NMS values (256 bins)
+void calculateHistogram(Matrix mx, int *histogram)
+{
+	int i, j;
+	for (i = 0; i < 256; i++) histogram[i] = 0;
+	for (i = 0; i < mx.height; i++)
+		for (j = 0; j < mx.width; j++)
+			if (mx.map[i][j] > 0.0)
+			{
+				int val = (int)(mx.map[i][j]);
+				if (val > 255) val = 255;
+				histogram[val]++;
+			}
+}
+
+// Otsu's method: find optimal threshold from histogram
+double otsuThreshold(int *histogram, int numPixels)
+{
+	int t;
+	double sum = 0.0, sumB = 0.0, wB = 0.0, wF = 0.0;
+	double maxVariance = 0.0, threshold = 0.0;
+
+	// Total sum of weighted gray levels
+	for (t = 0; t < 256; t++)
+		sum += t * histogram[t];
+
+	// Find optimal threshold
+	for (t = 0; t < 256; t++)
+	{
+		wB += histogram[t];
+		if (wB == 0) continue;
+		wF = numPixels - wB;
+		if (wF == 0) break;
+
+		sumB += t * histogram[t];
+		double mB = sumB / wB;
+		double mF = (sum - sumB) / wF;
+		double variance = wB * wF * (mB - mF) * (mB - mF);
+
+		if (variance > maxVariance)
+		{
+			maxVariance = variance;
+			threshold = t;
+		}
+	}
+	return threshold;
+}
+
+// Save edge matrix as PPM image (binary: 0=black, 255=white)
+void saveEdgeImage(Matrix mx, const char *filename)
+{
+	int m, n;
+	Image img = createImage(mx.height, mx.width);
+
+	for (m = 0; m < mx.height; m++)
+		for (n = 0; n < mx.width; n++)
+		{
+			int val = (mx.map[m][n] > 0.0) ? 255 : 0;
+			img.map[m][n].r = val;
+			img.map[m][n].g = val;
+			img.map[m][n].b = val;
+		}
+
+	writeImage(img, (char *)filename);
+	deleteImage(img);
+	printf("Saved edge image: %s\n", filename);
+}
+
+// Save Hough accumulator as PPM (normalized 0-255, angle=y, distance=x)
+void saveHoughSpace(Matrix mx, const char *filename)
+{
+	int m, n;
+	double maxVal = 0.0;
+
+	// Find max value for normalization
+	for (m = 0; m < mx.height; m++)
+		for (n = 0; n < mx.width; n++)
+			if (mx.map[m][n] > maxVal) maxVal = mx.map[m][n];
+
+	if (maxVal == 0.0) maxVal = 1.0;
+
+	Image img = createImage(mx.height, mx.width);
+
+	for (m = 0; m < mx.height; m++)
+		for (n = 0; n < mx.width; n++)
+		{
+			int val = (int)((mx.map[m][n] / maxVal) * 255.0);
+			if (val > 255) val = 255;
+			img.map[m][n].r = val;
+			img.map[m][n].g = val;
+			img.map[m][n].b = val;
+		}
+
+	writeImage(img, (char *)filename);
+	deleteImage(img);
+	printf("Saved Hough space: %s\n", filename);
+}
+
+// Export detected lines to CSV with angle, distance, strength, length
+void exportLinesToCSV(Matrix maxima, Matrix houghMatrix, int imgHeight, int imgWidth, const char *filename)
+{
+	FILE *fp = fopen(filename, "w");
+	if (!fp)
+	{
+		fprintf(stderr, "Warning: Could not open %s for writing\n", filename);
+		return;
+	}
+
+	fprintf(fp, "angle_degrees,distance,strength,length_pixels\n");
+
+	double maxLength = sqrt((double)(SQR(imgHeight) + SQR(imgWidth)));
+
+	for (int i = 0; i < maxima.width; i++)
+	{
+		if (maxima.map[2][i] < 0.0) break;
+
+		int row = (int)maxima.map[0][i];
+		int col = (int)maxima.map[1][i];
+		double strength = maxima.map[2][i];
+
+		double alpha = -0.5*PI + PI*row/(double)houghMatrix.height;
+		double dist = maxLength*col/(double)houghMatrix.width;
+
+		// Calculate line length from image corners
+		int m1 = (int)(dist*sin(alpha) - maxLength*cos(alpha) + 0.5);
+		int n1 = (int)(dist*cos(alpha) + maxLength*sin(alpha) + 0.5);
+		int m2 = (int)(dist*sin(alpha) + maxLength*cos(alpha) + 0.5);
+		int n2 = (int)(dist*cos(alpha) - maxLength*sin(alpha) + 0.5);
+
+		double length = sqrt((double)(SQR(m2-m1) + SQR(n2-n1)));
+		double angleDeg = alpha * 180.0 / PI;
+
+		fprintf(fp, "%.2f,%.2f,%.2f,%.2f\n", angleDeg, dist, strength, length);
+	}
+
+	fclose(fp);
+	printf("Exported lines to: %s\n", filename);
+}
+
+// Read image and write Hough transform related output images.
 int main()
 {
 	int i, m, n, m1, n1, m2, n2;
@@ -158,7 +297,7 @@ int main()
 	Matrix edgeMatrix = createMatrix(inputImage.height, inputImage.width);
 	Matrix houghMatrix;
 
-	// Add code for generating edge matrix here!!!
+	// Edge detection via adaptive thresholding
 	// Normalize the Gaussian filter (sum = 16)
 	Matrix gaussNorm = createMatrix(3, 3);
 	int gi, gj;
@@ -234,16 +373,18 @@ int main()
 			nms.map[m][n] = (cur >= nb1 && cur >= nb2) ? cur : 0.0;
 		}
 
-	// Double thresholding
-	double maxMag = 0.0;
-	for (m = 0; m < inputImage.height; m++)
-		for (n = 0; n < inputImage.width; n++)
-			if (nms.map[m][n] > maxMag) maxMag = nms.map[m][n];
-	double highThresh = 0.4 * maxMag;
+	// Adaptive thresholding using Otsu's method
+	int histogram[256];
+	calculateHistogram(nms, histogram);
+	int numPixels = inputImage.height * inputImage.width;
+	double highThresh = otsuThreshold(histogram, numPixels);
 
 	for (m = 0; m < inputImage.height; m++)
 		for (n = 0; n < inputImage.width; n++)
 			edgeMatrix.map[m][n] = (nms.map[m][n] >= highThresh) ? 255.0 : 0.0;
+
+	printf("Otsu threshold: %.1f\n", highThresh);
+	saveEdgeImage(edgeMatrix, "edges_debug.ppm");
 
 	deleteMatrix(gaussNorm);
 	deleteMatrix(smoothed);
@@ -255,10 +396,12 @@ int main()
 
 
 	houghMatrix = houghTransformLines(edgeMatrix, 360, 500);
+	saveHoughSpace(houghMatrix, "hough_space.ppm");
 
 	maxLength = sqrt((double) (SQR(inputImage.height) + SQR(inputImage.width)));
 
 	maxMatrix = findHoughMaxima(houghMatrix, 100, 50.0);
+	exportLinesToCSV(maxMatrix, houghMatrix, inputImage.height, inputImage.width, "detected_lines.csv");
 
 	for (i = 0; i < 100; i++)
 	{

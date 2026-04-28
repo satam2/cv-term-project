@@ -2,7 +2,7 @@
 *.exe
 
 # Debug output files
-edges_debug.ppm
+edges.ppm
 hough_space.ppm
 
 # Build artifacts

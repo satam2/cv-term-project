@@ -297,7 +297,7 @@ int main()
 	Matrix edgeMatrix = createMatrix(inputImage.height, inputImage.width);
 	Matrix houghMatrix;
 
-	// Edge detection via adaptive thresholding
+	// Edge detection via Canny (Sobel + NMS + threshold)
 	// Normalize the Gaussian filter (sum = 16)
 	Matrix gaussNorm = createMatrix(3, 3);
 	int gi, gj;
@@ -373,18 +373,49 @@ int main()
 			nms.map[m][n] = (cur >= nb1 && cur >= nb2) ? cur : 0.0;
 		}
 
-	// Adaptive thresholding using Otsu's method
-	int histogram[256];
-	calculateHistogram(nms, histogram);
-	int numPixels = inputImage.height * inputImage.width;
-	double highThresh = otsuThreshold(histogram, numPixels);
+	// Hysteresis thresholding (Canny's double threshold)
+	double highThresh = 175.0;
+	double lowThresh = highThresh/2.0; 
+	printf("Hysteresis thresholds: high=%.1f, low=%.1f\n", highThresh, lowThresh);
 
+	// First pass: mark strong and weak edges
+	Matrix strongEdges = createMatrix(inputImage.height, inputImage.width);
+	Matrix weakEdges = createMatrix(inputImage.height, inputImage.width);
 	for (m = 0; m < inputImage.height; m++)
 		for (n = 0; n < inputImage.width; n++)
-			edgeMatrix.map[m][n] = (nms.map[m][n] >= highThresh) ? 255.0 : 0.0;
+		{
+			if (nms.map[m][n] >= highThresh)
+				strongEdges.map[m][n] = 1;
+			else if (nms.map[m][n] >= lowThresh)
+				weakEdges.map[m][n] = 1;
+		}
 
-	printf("Otsu threshold: %.1f\n", highThresh);
-	saveEdgeImage(edgeMatrix, "edges_debug.ppm");
+	// Second pass: connect weak edges to strong edges
+	// Add strong edges first
+	for (m = 0; m < inputImage.height; m++)
+		for (n = 0; n < inputImage.width; n++)
+			edgeMatrix.map[m][n] = strongEdges.map[m][n] ? 255.0 : 0.0;
+
+	// Then connect weak edges to strong edges
+	for (m = 1; m < inputImage.height - 1; m++)
+		for (n = 1; n < inputImage.width - 1; n++)
+			if (weakEdges.map[m][n])
+			{
+				// Check 8 neighbors for strong edge
+				int connected = 0;
+				for (int di = -1; di <= 1 && !connected; di++)
+					for (int dj = -1; dj <= 1 && !connected; dj++)
+						if (strongEdges.map[m + di][n + dj])
+							connected = 1;
+				if (connected)
+					edgeMatrix.map[m][n] = 255.0;
+			}
+
+	deleteMatrix(strongEdges);
+	deleteMatrix(weakEdges);
+
+	printf("Edge thresholds: high=%.1f, low=%.1f\n", highThresh, lowThresh);
+	saveEdgeImage(edgeMatrix, "edges.ppm");
 
 	deleteMatrix(gaussNorm);
 	deleteMatrix(smoothed);

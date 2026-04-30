@@ -13,8 +13,6 @@
 #define MAX(X,Y) ((X)>(Y)?(X):(Y))
 
 // Build a Hough parameter map for matrix mxSpatial for detecting straight lines.
-// Rows in this map represent the normal alpha and columns represent the distance d from the origin.
-// Increasing the size of the map in each dimension improves the resolution of the corresponding parameter.
 Matrix houghTransformLines(Matrix mxSpatial, int mapHeight, int mapWidth)
 {
 	int m, n, angle, dist;
@@ -22,7 +20,6 @@ Matrix houghTransformLines(Matrix mxSpatial, int mapHeight, int mapWidth)
 	Matrix mxParam = createMatrix(mapHeight, mapWidth);
 	Matrix sincos = createMatrix(mapHeight, 2);
 
-	// Generate lookup table for sin and cos values to speed up subsequent computation.
 	for (angle = 0; angle < mapHeight; angle++)
 	{
 		alpha = -0.5*PI + PI*(double)angle/(double)mapHeight;
@@ -41,16 +38,13 @@ Matrix houghTransformLines(Matrix mxSpatial, int mapHeight, int mapWidth)
 				}
 
 	deleteMatrix(sincos);
-	return mxParam; 
+	return mxParam;
 }
 
-
-// Test whether entry (m, n) in matrix mx is a local maximum, i.e., is not exceeded by any of its 
-// maximally 8 neighbors. Return 1 if true, 0 otherwise.
 int isLocalMaximum(Matrix mx, int m, int n)
 {
 	double strength = mx.map[m][n];
-	int i, j; 
+	int i, j;
 	int iMin = (m == 0)? 0:(m - 1);
 	int iMax = (m == mx.height -1)? m:(m + 1);
 	int jMin = (n == 0)? 0:(n - 1);
@@ -63,8 +57,6 @@ int isLocalMaximum(Matrix mx, int m, int n)
 	return 1;
 }
 
-
-// Insert a new entry, consisting of vPos, hPos, and strength, into the list of maxima mx.
 void insertMaxEntry(Matrix mx, int vPos, int hPos, double strength)
 {
 	int m, n = mx.width - 1;
@@ -80,8 +72,6 @@ void insertMaxEntry(Matrix mx, int vPos, int hPos, double strength)
 	mx.map[2][n] = strength;
 }
 
-
-// Delete entry number i from the list of maxima mx.
 void deleteMaxEntry(Matrix mx, int i)
 {
 	int m, n;
@@ -93,10 +83,6 @@ void deleteMaxEntry(Matrix mx, int i)
 	mx.map[2][mx.width - 1] = -1.0;
 }
 
-
-// Find the <number> highest maxima in a Hough parameter map that are separated by a Euclidean distance 
-// of at least <minSeparation> in the map. The result is a three-row matrix with each column representing
-// the row, the column, and the strength of one maximum, in descending order of strength.
 Matrix findHoughMaxima(Matrix mx, int number, double minSeparation)
 {
 	int m, n, k, r, index, do_not_insert;
@@ -126,9 +112,7 @@ Matrix findHoughMaxima(Matrix mx, int number, double minSeparation)
 				if (SQR(m - r) + SQR(n - index) < minSepSquare)
 				{
 					if (strength > maxima.map[2][k])
-					{
 						deleteMaxEntry(maxima, k);
-					}
 					else
 					{
 						do_not_insert = 1;
@@ -144,56 +128,6 @@ Matrix findHoughMaxima(Matrix mx, int number, double minSeparation)
 	return maxima;
 }
 
-
-// Calculate histogram of non-zero NMS values (256 bins)
-void calculateHistogram(Matrix mx, int *histogram)
-{
-	int i, j;
-	for (i = 0; i < 256; i++) histogram[i] = 0;
-	for (i = 0; i < mx.height; i++)
-		for (j = 0; j < mx.width; j++)
-			if (mx.map[i][j] > 0.0)
-			{
-				int val = (int)(mx.map[i][j]);
-				if (val > 255) val = 255;
-				histogram[val]++;
-			}
-}
-
-// Otsu's method: find optimal threshold from histogram
-double otsuThreshold(int *histogram, int numPixels)
-{
-	int t;
-	double sum = 0.0, sumB = 0.0, wB = 0.0, wF = 0.0;
-	double maxVariance = 0.0, threshold = 0.0;
-
-	// Total sum of weighted gray levels
-	for (t = 0; t < 256; t++)
-		sum += t * histogram[t];
-
-	// Find optimal threshold
-	for (t = 0; t < 256; t++)
-	{
-		wB += histogram[t];
-		if (wB == 0) continue;
-		wF = numPixels - wB;
-		if (wF == 0) break;
-
-		sumB += t * histogram[t];
-		double mB = sumB / wB;
-		double mF = (sum - sumB) / wF;
-		double variance = wB * wF * (mB - mF) * (mB - mF);
-
-		if (variance > maxVariance)
-		{
-			maxVariance = variance;
-			threshold = t;
-		}
-	}
-	return threshold;
-}
-
-// Save edge matrix as PPM image (binary: 0=black, 255=white)
 void saveEdgeImage(Matrix mx, const char *filename)
 {
 	int m, n;
@@ -213,13 +147,11 @@ void saveEdgeImage(Matrix mx, const char *filename)
 	printf("Saved edge image: %s\n", filename);
 }
 
-// Save Hough accumulator as PPM (normalized 0-255, angle=y, distance=x)
 void saveHoughSpace(Matrix mx, const char *filename)
 {
 	int m, n;
 	double maxVal = 0.0;
 
-	// Find max value for normalization
 	for (m = 0; m < mx.height; m++)
 		for (n = 0; n < mx.width; n++)
 			if (mx.map[m][n] > maxVal) maxVal = mx.map[m][n];
@@ -243,7 +175,6 @@ void saveHoughSpace(Matrix mx, const char *filename)
 	printf("Saved Hough space: %s\n", filename);
 }
 
-// Export detected lines to CSV with angle, distance, strength, length
 void exportLinesToCSV(Matrix maxima, Matrix houghMatrix, int imgHeight, int imgWidth, const char *filename)
 {
 	FILE *fp = fopen(filename, "w");
@@ -268,7 +199,6 @@ void exportLinesToCSV(Matrix maxima, Matrix houghMatrix, int imgHeight, int imgW
 		double alpha = -0.5*PI + PI*row/(double)houghMatrix.height;
 		double dist = maxLength*col/(double)houghMatrix.width;
 
-		// Calculate line length from image corners
 		int m1 = (int)(dist*sin(alpha) - maxLength*cos(alpha) + 0.5);
 		int n1 = (int)(dist*cos(alpha) + maxLength*sin(alpha) + 0.5);
 		int m2 = (int)(dist*sin(alpha) + maxLength*cos(alpha) + 0.5);
@@ -287,7 +217,7 @@ void exportLinesToCSV(Matrix maxima, Matrix houghMatrix, int imgHeight, int imgW
 // Read image and write Hough transform related output images.
 int main()
 {
-	int i, m, n, m1, n1, m2, n2;
+	int i, m, n;
 	double maxLength, alpha, dist;
 	Matrix maxMatrix;
 	double gaussFilter[3][3] = {{1.0, 2.0, 1.0}, {2.0, 4.0, 2.0}, {1.0, 2.0, 1.0}};
@@ -297,8 +227,7 @@ int main()
 	Matrix edgeMatrix = createMatrix(inputImage.height, inputImage.width);
 	Matrix houghMatrix;
 
-	// Edge detection via Canny (Sobel + NMS + threshold)
-	// Normalize the Gaussian filter (sum = 16)
+	// Edge detection via Canny (Sobel + NMS + hysteresis)
 	Matrix gaussNorm = createMatrix(3, 3);
 	int gi, gj;
 	for (gi = 0; gi < 3; gi++)
@@ -373,12 +302,11 @@ int main()
 			nms.map[m][n] = (cur >= nb1 && cur >= nb2) ? cur : 0.0;
 		}
 
-	// Hysteresis thresholding (Canny's double threshold)
+	// Hysteresis thresholding
 	double highThresh = 175.0;
-	double lowThresh = highThresh/2.0; 
+	double lowThresh = highThresh / 2.0;
 	printf("Hysteresis thresholds: high=%.1f, low=%.1f\n", highThresh, lowThresh);
 
-	// First pass: mark strong and weak edges
 	Matrix strongEdges = createMatrix(inputImage.height, inputImage.width);
 	Matrix weakEdges = createMatrix(inputImage.height, inputImage.width);
 	for (m = 0; m < inputImage.height; m++)
@@ -390,18 +318,16 @@ int main()
 				weakEdges.map[m][n] = 1;
 		}
 
-	// Second pass: connect weak edges to strong edges
 	// Add strong edges first
 	for (m = 0; m < inputImage.height; m++)
 		for (n = 0; n < inputImage.width; n++)
 			edgeMatrix.map[m][n] = strongEdges.map[m][n] ? 255.0 : 0.0;
 
-	// Then connect weak edges to strong edges
+	// Connect weak edges to strong edges
 	for (m = 1; m < inputImage.height - 1; m++)
 		for (n = 1; n < inputImage.width - 1; n++)
 			if (weakEdges.map[m][n])
 			{
-				// Check 8 neighbors for strong edge
 				int connected = 0;
 				for (int di = -1; di <= 1 && !connected; di++)
 					for (int dj = -1; dj <= 1 && !connected; dj++)
@@ -425,7 +351,6 @@ int main()
 	deleteMatrix(direction);
 	deleteMatrix(nms);
 
-
 	houghMatrix = houghTransformLines(edgeMatrix, 360, 500);
 	saveHoughSpace(houghMatrix, "hough_space.ppm");
 
@@ -434,17 +359,85 @@ int main()
 	maxMatrix = findHoughMaxima(houghMatrix, 100, 50.0);
 	exportLinesToCSV(maxMatrix, houghMatrix, inputImage.height, inputImage.width, "detected_lines.csv");
 
+	// Draw segmented lines
+	int linesDrawn = 0;
 	for (i = 0; i < 100; i++)
 	{
 		if (maxMatrix.map[2][i] < 0.0) break;
+
 		alpha = -0.5*PI + PI*maxMatrix.map[0][i]/(double) houghMatrix.height;
 		dist = maxLength*maxMatrix.map[1][i]/(double) houghMatrix.width;
-		m1 = (int) (dist*sin(alpha) - maxLength*cos(alpha) + 0.5);
-		n1 = (int) (dist*cos(alpha) + maxLength*sin(alpha) + 0.5);
-		m2 = (int) (dist*sin(alpha) + maxLength*cos(alpha) + 0.5);
-		n2 = (int) (dist*cos(alpha) - maxLength*sin(alpha) + 0.5);
-		line(inputImage, m1, n1, m2, n2, 2, 18, 10, 30, 30, 30, 0);
+
+		// Calculate line endpoints
+		int m1 = (int) (dist*sin(alpha) - maxLength*cos(alpha) + 0.5);
+		int n1 = (int) (dist*cos(alpha) + maxLength*sin(alpha) + 0.5);
+		int m2 = (int) (dist*sin(alpha) + maxLength*cos(alpha) + 0.5);
+		int n2 = (int) (dist*cos(alpha) - maxLength*sin(alpha) + 0.5);
+
+		// Clip to image bounds
+		int x1 = n1, y1 = m1, x2 = n2, y2 = m2;
+
+		// Clip x
+		if (x2 != x1) {
+			float slope = (float)(y2 - y1) / (x2 - x1);
+			if (x1 < 0) { y1 = y1 + (int)((0 - x1) * slope); x1 = 0; }
+			if (x2 < 0) { y2 = y2 + (int)((0 - x2) * slope); x2 = 0; }
+			if (x1 >= inputImage.width) { y1 = y1 + (int)((inputImage.width - 1 - x1) * slope); x1 = inputImage.width - 1; }
+			if (x2 >= inputImage.width) { y2 = y2 + (int)((inputImage.width - 1 - x2) * slope); x2 = inputImage.width - 1; }
+		}
+		// Clip y
+		if (y2 != y1) {
+			float slope = (float)(x2 - x1) / (y2 - y1);
+			if (y1 < 0) { x1 = x1 + (int)((0 - y1) * slope); y1 = 0; }
+			if (y2 < 0) { x2 = x2 + (int)((0 - y2) * slope); y2 = 0; }
+			if (y1 >= inputImage.height) { x1 = x1 + (int)((inputImage.height - 1 - y1) * slope); y1 = inputImage.height - 1; }
+			if (y2 >= inputImage.height) { x2 = x2 + (int)((inputImage.height - 1 - y2) * slope); y2 = inputImage.height - 1; }
+		}
+
+		// Find edge pixels along the line
+		int dx = x2 - x1, dy = y2 - y1;
+		int steps = (abs(dx) > abs(dy)) ? abs(dx) : abs(dy);
+		if (steps == 0) steps = 1;
+		float incX = (float)dx / steps, incY = (float)dy / steps;
+
+		int startX = x1, startY = y1, endX = x2, endY = y2;
+		int foundStart = 0, foundEnd = 0;
+
+		// Find first edge pixel
+		for (int s = 0; s <= steps; s++)
+		{
+			int px = x1 + (int)(s * incX);
+			int py = y1 + (int)(s * incY);
+			if (px >= 0 && px < inputImage.width && py >= 0 && py < inputImage.height)
+				if (edgeMatrix.map[py][px] > 0)
+				{
+					startX = px; startY = py; foundStart = 1;
+					break;
+				}
+		}
+
+		// Find last edge pixel
+		for (int s = steps; s >= 0; s--)
+		{
+			int px = x1 + (int)(s * incX);
+			int py = y1 + (int)(s * incY);
+			if (px >= 0 && px < inputImage.width && py >= 0 && py < inputImage.height)
+				if (edgeMatrix.map[py][px] > 0)
+				{
+					endX = px; endY = py; foundEnd = 1;
+					break;
+				}
+		}
+
+		// Draw if both endpoints found
+		if (foundStart && foundEnd)
+		{
+			line(inputImage, startY, startX, endY, endX, 1, 0, 0, 255, 0, 0, 0);
+			linesDrawn++;
+		}
 	}
+
+	printf("Lines drawn: %d\n", linesDrawn);
 	writeImage(inputImage, "hough_lines.ppm");
 
 	deleteMatrix(edgeMatrix);

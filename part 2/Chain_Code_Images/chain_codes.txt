@@ -5,164 +5,164 @@
 #   5 6 7
 
 segment 000  length=54  start=(206,4)  end=(254,47)
-  codes: 077070077777777777770770777070770700776777767767766776
+  codes: 077070077777777777707770777070770700776777767767766776
 
-segment 001  length=14  start=(9,12)  end=(16,25)
-  codes: 07676666767767
+segment 001  length=22  start=(19,9)  end=(16,24)
+  codes: 4444445456677666676777
 
-segment 002  length=15  start=(18,28)  end=(22,43)
-  codes: 667667676766666
+segment 002  length=17  start=(18,27)  end=(22,44)
+  codes: 66676676767666666
 
-segment 003  length=23  start=(149,53)  end=(156,76)
-  codes: 76776676676666766666676
+segment 003  length=12  start=(188,30)  end=(200,31)
+  codes: 000070000000
 
-segment 004  length=36  start=(175,73)  end=(203,104)
-  codes: 676777677707707777777070707766766767
+segment 004  length=24  start=(149,52)  end=(156,76)
+  codes: 677667676676666676666676
 
-segment 005  length=13  start=(157,79)  end=(161,92)
-  codes: 7676666767675
+segment 005  length=35  start=(175,73)  end=(203,104)
+  codes: 67767777777707777777070707766676767
 
-segment 006  length=10  start=(154,80)  end=(148,90)
-  codes: 6556556556
+segment 006  length=15  start=(158,79)  end=(165,92)
+  codes: 676666767667700
 
-segment 007  length=31  start=(541,90)  end=(544,121)
-  codes: 6765766666666566666666667667676
+segment 007  length=10  start=(154,80)  end=(147,90)
+  codes: 5656555655
 
-segment 008  length=41  start=(116,120)  end=(144,159)
-  codes: 77677767676676777777770707777676676676776
+segment 008  length=30  start=(541,91)  end=(544,121)
+  codes: 676666666665666666666667667667
 
-segment 009  length=22  start=(167,123)  end=(187,142)
-  codes: 7077077777077777767776
+segment 009  length=23  start=(161,98)  end=(165,121)
+  codes: 66666666566676676766767
 
-segment 010  length=39  start=(466,125)  end=(476,164)
-  codes: 666676766766676676666667667667666676766
+segment 010  length=44  start=(116,120)  end=(146,160)
+  codes: 77776776766676776777707070777767667667676770
 
-segment 011  length=12  start=(154,130)  end=(152,142)
-  codes: 666656656666
+segment 011  length=22  start=(167,123)  end=(187,142)
+  codes: 7077707777077777767776
 
-segment 012  length=32  start=(445,157)  end=(452,189)
-  codes: 66676766676766766766666766666666
+segment 012  length=36  start=(465,128)  end=(476,164)
+  codes: 767766766766676666667667667666676766
 
-segment 013  length=25  start=(509,160)  end=(484,168)
-  codes: 5554545444544444454444544
+segment 013  length=11  start=(154,130)  end=(152,141)
+  codes: 66656665666
 
-segment 014  length=14  start=(104,165)  end=(91,172)
-  codes: 65455455444454
+segment 014  length=30  start=(445,159)  end=(452,189)
+  codes: 676766676766676766666766666666
 
-segment 015  length=18  start=(162,169)  end=(180,179)
-  codes: 770000007077770777
+segment 015  length=25  start=(509,161)  end=(484,168)
+  codes: 5455445444544444454444544
 
-segment 016  length=11  start=(90,175)  end=(101,184)
-  codes: 77777077077
+segment 016  length=14  start=(105,165)  end=(91,172)
+  codes: 55554455444454
 
-segment 017  length=48  start=(411,183)  end=(430,228)
-  codes: 007077767676776666766667666766767676676766766656
+segment 017  length=22  start=(161,169)  end=(183,181)
+  codes: 7070000007077770777077
 
-segment 018  length=13  start=(92,203)  end=(105,210)
-  codes: 0070700770777
+segment 018  length=11  start=(90,175)  end=(101,183)
+  codes: 77777077070
 
-segment 019  length=14  start=(378,214)  end=(386,227)
-  codes: 66707767676767
+segment 019  length=47  start=(411,183)  end=(431,227)
+  codes: 00707776767676766676666766676766767667676666667
 
-segment 020  length=28  start=(7,215)  end=(30,239)
-  codes: 0007076777777777776777767766
+segment 020  length=14  start=(91,202)  end=(105,210)
+  codes: 00770700770777
 
-segment 021  length=14  start=(385,235)  end=(392,248)
-  codes: 07767776766666
+segment 021  length=12  start=(377,214)  end=(385,226)
+  codes: 767777767676
 
-segment 022  length=43  start=(146,238)  end=(167,281)
-  codes: 6776776766766767676667676766767676767767776
+segment 022  length=29  start=(7,215)  end=(33,239)
+  codes: 00707777777777777677776776700
 
-segment 023  length=23  start=(511,238)  end=(525,261)
-  codes: 76777677677677776676667
+segment 023  length=15  start=(384,235)  end=(392,248)
+  codes: 007767776766666
 
-segment 024  length=36  start=(443,260)  end=(466,296)
-  codes: 677676776767676777677677677677776776
+segment 024  length=43  start=(273,236)  end=(243,270)
+  codes: 4444545455555565655565554555556554555666707
 
-segment 025  length=26  start=(57,264)  end=(76,285)
-  codes: 07070777070777667766766767
+segment 025  length=22  start=(512,238)  end=(524,260)
+  codes: 6677767767767777667666
 
-segment 026  length=27  start=(525,301)  end=(498,307)
-  codes: 455454545454445444434444444
+segment 026  length=42  start=(146,239)  end=(167,281)
+  codes: 776776766766767676667676766767676767767776
 
-segment 027  length=29  start=(385,303)  end=(394,332)
-  codes: 66676666676677677667667666766
+segment 027  length=37  start=(442,259)  end=(466,296)
+  codes: 7677676776767676777767677677677767776
 
-segment 028  length=39  start=(254,383)  end=(264,422)
-  codes: 777676766766666766676666766667666666666
+segment 028  length=25  start=(57,264)  end=(75,284)
+  codes: 0707077707077766767676676
 
-segment 029  length=19  start=(506,408)  end=(516,421)
-  codes: 1007007767676666666
+segment 029  length=29  start=(526,301)  end=(497,307)
+  codes: 45454545454544445444344444444
 
-segment 030  length=24  start=(183,420)  end=(207,434)
-  codes: 007070070077077077777707
+segment 030  length=37  start=(385,303)  end=(397,340)
+  codes: 6666766667667767676766766676667666767
 
-segment 031  length=15  start=(516,424)  end=(525,439)
-  codes: 767776776677676
+segment 031  length=39  start=(254,383)  end=(264,422)
+  codes: 777676766676666676676667666667666666666
 
-segment 032  length=27  start=(352,427)  end=(378,435)
-  codes: 070000000000700700777670000
+segment 032  length=30  start=(514,410)  end=(525,440)
+  codes: 766766666665677776767767676766
 
-segment 033  length=14  start=(857,433)  end=(866,444)
-  codes: 76676667777000
+segment 033  length=20  start=(353,427)  end=(373,433)
+  codes: 07000000000700700777
 
-segment 034  length=9  start=(877,435)  end=(870,444)
+segment 034  length=16  start=(858,431)  end=(866,444)
+  codes: 6576667676777000
+
+segment 035  length=9  start=(877,435)  end=(870,444)
   codes: 565655555
 
-segment 035  length=16  start=(431,447)  end=(436,463)
-  codes: 6677676676767665
+segment 036  length=30  start=(818,494)  end=(821,524)
+  codes: 766666666666666666766676666666
 
-segment 036  length=18  start=(348,463)  end=(366,475)
-  codes: 777777070707077070
+segment 037  length=36  start=(795,524)  end=(810,560)
+  codes: 676676666676666666666667767777777777
 
-segment 037  length=29  start=(818,494)  end=(821,523)
-  codes: 76666666666666666676667666666
+segment 038  length=30  start=(503,535)  end=(533,537)
+  codes: 700000000000000000000000007000
 
-segment 038  length=39  start=(553,514)  end=(535,525)
-  codes: 232334343444444444544455656666667677677
+segment 039  length=23  start=(665,542)  end=(688,560)
+  codes: 07070077777777777707777
 
-segment 039  length=35  start=(795,525)  end=(810,560)
-  codes: 76676667666666666666667767777777777
+segment 040  length=26  start=(564,560)  end=(538,561)
+  codes: 43444444444444454444544444
 
-segment 040  length=32  start=(501,535)  end=(533,537)
-  codes: 00700000000000000000000000007000
-
-segment 041  length=12  start=(813,561)  end=(824,567)
-  codes: 070070070767
+segment 041  length=10  start=(813,561)  end=(823,565)
+  codes: 0700700707
 
 segment 042  length=9  start=(811,563)  end=(807,572)
-  codes: 565665656
+  codes: 566565656
 
-segment 043  length=23  start=(659,565)  end=(682,571)
-  codes: 70707070007000700070100
+segment 043  length=27  start=(656,564)  end=(683,571)
+  codes: 007707070700007007000701000
 
-segment 044  length=15  start=(328,567)  end=(343,568)
-  codes: 107010000700070
+segment 044  length=15  start=(328,567)  end=(343,569)
+  codes: 107010000700707
 
-segment 045  length=16  start=(401,585)  end=(413,598)
-  codes: 7676677777767701
+segment 045  length=17  start=(248,607)  end=(253,623)
+  codes: 07777776766665655
 
 segment 046  length=27  start=(504,621)  end=(531,623)
-  codes: 000000000000000000000000077
+  codes: 000000000000000701000000077
 
-segment 047  length=27  start=(561,648)  end=(563,675)
-  codes: 666666666656666666676667667
+segment 047  length=23  start=(208,665)  end=(228,667)
+  codes: 21001010100007007077766
 
-segment 048  length=23  start=(207,665)  end=(228,667)
-  codes: 01110010100007007077766
+segment 048  length=24  start=(305,685)  end=(329,690)
+  codes: 007000000070000700700007
 
-segment 049  length=12  start=(751,679)  end=(755,691)
-  codes: 767676676666
+segment 049  length=21  start=(247,688)  end=(268,704)
+  codes: 077077707070777777777
 
-segment 050  length=23  start=(757,693)  end=(778,712)
-  codes: 77777707777700707777667
+segment 050  length=21  start=(747,693)  end=(768,703)
+  codes: 007100000077777077777
 
 segment 051  length=26  start=(557,698)  end=(568,724)
   codes: 66667677777776676767666666
 
-segment 052  length=37  start=(312,701)  end=(276,713)
-  codes: 5655455554544445445344444544445443445
+segment 052  length=38  start=(312,701)  end=(275,712)
+  codes: 56554555545444544453444444544454443444
 
-segment 053  length=11  start=(776,714)  end=(765,717)
-  codes: 44454444554
+segment 053  length=10  start=(776,714)  end=(766,717)
+  codes: 4454444545
 

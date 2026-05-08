@@ -1,8 +1,9 @@
 """
 Stage 3: Binary mask of fracture features.
 
-Reads ../Median_Filter_Images/median.png and produces a binary mask where
-foreground (255) == "this pixel belongs to a fracture-like linear feature".
+Reads ../CLAHE_Images/clahe.png (denoised + contrast-enhanced) and
+produces a binary mask where foreground (255) == "this pixel belongs
+to a fracture-like linear feature".
 
 Approach (uses scikit-image + OpenCV libraries, as requested):
   1. Sato tubeness / ridge filter (skimage.filters.sato) tuned for dark
@@ -25,7 +26,7 @@ from skimage.filters import sato
 from skimage.morphology import remove_small_objects, closing, disk
 
 HERE = Path(__file__).resolve().parent
-SRC = HERE.parent / "Median_Filter_Images" / "median.png"
+SRC = HERE.parent / "CLAHE_Images" / "clahe.png"
 DST = HERE / "binary_mask.png"
 RIDGE_DST = HERE / "ridge_response.png"
 

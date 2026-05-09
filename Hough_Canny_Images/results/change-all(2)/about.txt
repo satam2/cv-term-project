@@ -1,0 +1,18 @@
+Image: 930 x 727
+Saved: output2_edges.png
+Hough segments found: 151
+Segments kept (top-60): 60
+Saved: output2_lines.png
+Raw crossings: 313
+Merged crossings: 10
+
+#define BLUR_KERNEL       11     // heavier blur
+#define CANNY_LOW         40.0  
+#define CANNY_HIGH        120.0  
+#define HOUGH_THRESHOLD   120    // slightly more lenient
+#define HOUGH_MIN_LEN     120.0  // catch slightly shorter fractures
+#define HOUGH_MAX_GAP     30.0   // connect more broken segments
+#define CROSS_ANGLE_MIN   45.0   // only meaningful X's
+#define CROSS_ANGLE_MAX   90.0   
+#define CROSS_RADIUS      80.0   // merge a wider area
+#define TOP_N_LINES       60     // fewer, more dominant lines

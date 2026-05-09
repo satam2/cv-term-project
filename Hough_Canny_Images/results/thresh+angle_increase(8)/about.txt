@@ -1,0 +1,20 @@
+Image: 930 x 727
+Saved: output8_edges.png
+Hough segments found: 540
+Segments kept (top-80): 80
+Saved: output8_lines.png
+Raw crossings: 443
+Merged crossings: 37
+
+/* ── Tunable parameters ─────────────────────────────────────────────────── */
+#define BLUR_KERNEL       9      /* Gaussian kernel size (must be odd)        */
+#define CANNY_LOW         50.0   /* Canny lower threshold                     */
+#define CANNY_HIGH        130.0  /* Canny upper threshold                     */
+#define HOUGH_THRESHOLD   110    /* Accumulator votes needed                  */
+#define HOUGH_MIN_LEN     150.0  /* Minimum segment length in pixels          */
+#define HOUGH_MAX_GAP     25.0   /* Max gap within a segment                  */
+#define CROSS_ANGLE_MIN   50.0   /* Min crossing angle (degrees)              */
+#define CROSS_ANGLE_MAX   85.0   /* Max crossing angle (degrees)              */
+#define CROSS_RADIUS      60.0   /* Cluster radius for merging crossings      */
+#define TOP_N_LINES       80     /* Keep only the N longest segments          */
+/* ─────────────────────────────────────────────────────────────────────────── */

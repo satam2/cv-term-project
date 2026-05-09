@@ -1,0 +1,12 @@
+# Compiled binaries
+*.exe
+
+# Debug output files
+edges.ppm
+hough_space.ppm
+
+# Build artifacts
+hough
+
+# Design documents (not for git)
+docs/

@@ -1,0 +1,21 @@
+{
+  "version": "2.0.0",
+  "tasks": [{
+    "label": "build",
+    "type": "shell",
+    "command": "/opt/homebrew/bin/g++-15",
+    "args": [
+      "${file}",
+      "-o", "${fileDirname}/${fileBasenameNoExtension}",
+      "-std=c++11"
+    ],
+    "options": {
+      "shell": {
+        "executable": "/bin/zsh",
+        "args": ["-c", "/opt/homebrew/bin/g++-15 ${file} -o ${fileDirname}/${fileBasenameNoExtension} -std=c++11 $(pkg-config --cflags --libs opencv4)"]
+      }
+    },
+    "group": { "kind": "build", "isDefault": true },
+    "problemMatcher": ["$gcc"]
+  }]
+}

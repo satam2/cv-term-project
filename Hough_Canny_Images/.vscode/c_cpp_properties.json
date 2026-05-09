@@ -1,0 +1,13 @@
+{
+    "configurations": [{
+      "name": "Mac",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/opt/homebrew/opt/opencv/include/opencv4"
+      ],
+      "compilerPath": "/opt/homebrew/bin/g++-15",
+      "cppStandard": "c++11",
+      "intelliSenseMode": "macos-gcc-arm64"
+    }],
+    "version": 4
+}

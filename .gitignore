@@ -1,0 +1,41 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+
+# C build artifacts
+*.exe
+*.o
+*.obj
+*.out
+
+# Bare-name compiled executables (from part 1 C programs)
+part\ 1/Canny_Filter_Images/canny
+part\ 1/Gaussian_Filter_Images/gaussian
+part\ 1/Sobel_Filter_Images/sobel
+part\ 1/Hough_Transform_Images/hough
+part\ 1/Texture/main
+
+# Generated debug/intermediate outputs (part 1 Hough)
+part\ 1/Hough_Transform_Images/edges.ppm
+part\ 1/Hough_Transform_Images/hough_space.ppm
+
+# Design docs not for git
+part\ 1/Hough_Transform_Images/docs/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Claude Code local config
+.claude/

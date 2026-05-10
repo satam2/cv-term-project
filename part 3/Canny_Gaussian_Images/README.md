@@ -1,0 +1,3 @@
+# Canny Edge Detector — Performance with Gaussian Filter
+
+We used the Canny edge detector with a Gaussian smoothing stage in order to blur the image for results for prominent edges. We result of the smoother edge detector had less noise and thicker edges. The image was enlarged with certain edges being emphasized compared to Canny without Gaussian. Initially, the original threshold was too strong which made the input and Gaussian not able to find any edges. It was only when we lowered the Canny threshold, that it made the lines more sensitive. This helped to find stronger and prominent lines. 

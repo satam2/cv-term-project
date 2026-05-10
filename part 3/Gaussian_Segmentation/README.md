@@ -1,0 +1,3 @@
+# Gaussian Segmentation
+
+For texture segmentation we utilized Laws Filter and K-means. There was also connected-component labeller to help detect regions such as vegetation, lakes, and rocks. The input image was a gaussian noise filter of the geologicaal datatset photo. When filtered with image segmentation, there was more blur compared to without. These blurs had made it less consistent to segment with certain areas of textures. Some textures were mixed with different regions because the gaussian blur had made the colored region less intense. 
